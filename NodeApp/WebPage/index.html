@@ -1,0 +1,36 @@
+﻿<html>
+<head>
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js" charset="utf-8"></script>
+    <script type="text/javascript">
+        window.onload = function () {
+            var username = document.getElementById("name");
+            var password = document.getElementById("pasword");
+            var sbmbtn = document.getElementById("sbmbtn");
+
+            sbmbtn.onclick = function () {
+                $.ajax({
+                    url: "/Login",
+                    data: { user: username.value, password: password.value },
+                    success: function (str) {
+                        var jason = eval(str);
+                        if (jason.ok) {
+                            alert('successful');
+                        } else {
+                            alert('failed     ' + jason.msg);
+                        }
+                    },
+                    error: function () {
+                        alert('net word unavailable');
+                    }
+                });
+            };
+        };
+    </script>
+</head>
+<body>
+        First Name: <input type="text" name="first_name" id="name">  <br>
+
+        Last Name: <input type="text" name="last_name" id="pasword">
+        <input type="submit" value="Submit" id="sbmbtn">
+</body>
+</html>

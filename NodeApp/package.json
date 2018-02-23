@@ -1,0 +1,16 @@
+{
+  "name": "node-app",
+  "version": "0.0.0",
+  "description": "NodeApp",
+  "main": "server.js",
+  "author": {
+    "name": "Administrator"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2"
+  },
+  "devDependencies": {
+    "express-static": "^1.2.5"
+  }
+}
