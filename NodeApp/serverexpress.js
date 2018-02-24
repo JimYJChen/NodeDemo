@@ -6,7 +6,7 @@ const util = require('util');
 const querystrq = require('querystring');
 const fs = require('fs');
 const parseString = require('xml2js').parseString;
-
+const bodyparser = require('body-parser');
 
 var users = {
     'blue': '1234',
@@ -15,6 +15,7 @@ var users = {
 };
 
 var server = express();
+server.use(bodyparser());
 server.get('/WebPage/index.html', function (req, res) {
     var params = urllib.parse(req.url, true);
     var file_name = 'F:/Jimtest/NodeApp/NodeApp';
@@ -71,23 +72,48 @@ server.get('/WX', function (req, res) {
     <Content>< ![CDATA[你好] ]></Content> </xml>
 
 */
-server.post('/WX', function (req, res) {
+server.post('/WX', function (req, res,next) {
     console.log('received!');
+    var str = '';
     req.on('data', function (data) {
-        var parms = querystrq.parse(data.toString());
-        var jsonfromwx;
-        //console.log(parms);
-        parseString(parms, function (err, result) {
-            if (err == null) {
-                jasonfromwx = JSON.stringify(result);
-                console.log(jasonfromwx.Content);
-            }
-        });
+        str += data;
+        
         //console.log(jsonfromwx);
     });
-    
-    //res.send(true);
-    res.send(' ');
+    req.on('end', function () {
+        req.body = querystrq.parse(str);
+        console.log(req.body);
+        //console.log(parms);
+        parseString(str, function (err, result) {
+            if (err) {
+                
+            } else {
+                console.log(result);
+                //jasonfromwx = JSON.stringify(result);
+                console.log(result.xml['Content']);
+                req.body = result;
 
+                res.send(result);
+            }
+        });
+    });
+    
+    //var parms = querystrq.parse(data.toString());
+    //var jsonfromwx;
+    ////console.log(parms);
+    //parseString(parms, function (err, result) {
+    //    if (err == null) {
+    //        jasonfromwx = JSON.stringify(result);
+    //        console.log(jasonfromwx.Content);
+    //    }
+    //});
+    //res.send(true);
+    //res.send(' ');
+    next();
 });
+server.use('/',function (req, res, next) {
+    console.log('123');
+    res.send(req.body);
+    res.end();
+})
 server.listen(80);
