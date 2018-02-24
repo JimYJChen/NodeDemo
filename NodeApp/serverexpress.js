@@ -3,8 +3,10 @@ const expressstatic = require('express-static');
 const http = require('http');
 const urllib = require('url');
 const util = require('util');
-const querystr = require('querystring');
-const fs = require("fs");
+const querystrq = require('querystring');
+const fs = require('fs');
+const parseString = require('xml2js').parseString;
+
 
 var users = {
     'blue': '1234',
@@ -50,5 +52,42 @@ server.get('/Login', function (req, res) {
             res.send({ 'ok': true, 'msg': 'LogIn success!' });
         }
     }
+});
+server.get('/WX', function (req, res) {
+    console.log('Have Log in request!');
+    var get = req.query;
+    console.log(get);
+    //res.writeHead(200, { 'Content-Type': 'text/plain' });
+
+    res.send(get.echostr);
+    res.end;
+});
+/*
+    XML from Wechat :
+    <xml> <ToUserName>< ![CDATA[toUser] ]></ToUserName>
+    <FromUserName>< ![CDATA[fromUser] ]></FromUserName>
+    <CreateTime>12345678</CreateTime>
+    <MsgType>< ![CDATA[text] ]></MsgType>
+    <Content>< ![CDATA[你好] ]></Content> </xml>
+
+*/
+server.post('/WX', function (req, res) {
+    console.log('received!');
+    req.on('data', function (data) {
+        var parms = querystrq.parse(data.toString());
+        var jsonfromwx;
+        //console.log(parms);
+        parseString(parms, function (err, result) {
+            if (err == null) {
+                jasonfromwx = JSON.stringify(result);
+                console.log(jasonfromwx.Content);
+            }
+        });
+        //console.log(jsonfromwx);
+    });
+    
+    //res.send(true);
+    res.send(' ');
+
 });
 server.listen(80);
