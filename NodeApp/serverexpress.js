@@ -5,14 +5,37 @@ const urllib = require('url');
 const util = require('util');
 const querystrq = require('querystring');
 const fs = require('fs');
+const xml2js = require('xml2js');
 const parseString = require('xml2js').parseString;
 const bodyparser = require('body-parser');
+const xmlreader = require("xmlreader");
+const fastxmlparser = require('fast-xml-parser');
+
+const builder = new xml2js.Builder;
+const parser = new xml2js.Parser;
 
 var users = {
     'blue': '1234',
     'yell': '222',
     'Jim':'4369'
 };
+var jsonneedreturn = {
+    xml: {
+        ToUserName: '',
+        FromUserName: '',
+        CreateTime: '',
+        MsgType: '',
+        Content :'',
+    }
+};
+
+//var returnstr = fs.readFile('../NodeApp/Package/responsetxt.xml', 'utf-8', function (err, res) {
+//    if (err !== null) {
+//        return;
+//    }
+//    jsonneedreturn = fastxmlparser.parse(res);
+//    console.log(jsonneedreturn);
+//});
 
 var server = express();
 server.use(bodyparser());
@@ -72,7 +95,8 @@ server.get('/WX', function (req, res) {
     <Content>< ![CDATA[你好] ]></Content> </xml>
 
 */
-server.post('/WX', function (req, res,next) {
+server.post('/WX', function (req, res, next) {
+
     console.log('received!');
     var str = '';
     req.on('data', function (data) {
@@ -89,11 +113,23 @@ server.post('/WX', function (req, res,next) {
                 
             } else {
                 console.log(result);
-                //jasonfromwx = JSON.stringify(result);
-                console.log(result.xml['Content']);
-                req.body = result;
 
-                res.send(result);
+
+                console.log(jsonneedreturn);
+                ////jasonfromwx = JSON.stringify(result);
+                console.log(result.xml['Content']);
+                jsonneedreturn.xml.ToUserName = result.xml['FromUserName'];
+                jsonneedreturn.xml.FromUserName = result.xml['ToUserName'];
+                jsonneedreturn.xml.MsgType = result.xml['MsgType'];
+                jsonneedreturn.xml.Content = result.xml['Content'];
+                jsonneedreturn.xml.CreateTime = Date.now();
+                var returnxml = builder.buildObject(jsonneedreturn);
+
+                console.log('return json : ' + returnxml);
+                //req.body = result;
+
+                res.send(returnxml);
+
             }
         });
     });
@@ -109,11 +145,12 @@ server.post('/WX', function (req, res,next) {
     //});
     //res.send(true);
     //res.send(' ');
-    next();
+    
 });
-server.use('/',function (req, res, next) {
-    console.log('123');
-    res.send(req.body);
-    res.end();
-})
-server.listen(80);
+
+//server.use(function (req, res, next) {
+//    console.log('123     '+req.body);
+//    res.send(req.body);
+//    //res.end();
+//})
+    server.listen(80);

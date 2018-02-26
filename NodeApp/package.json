@@ -9,8 +9,9 @@
   "dependencies": {
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
-    "koa-bodyparser": "^4.2.0",
-    "xml2js": "^0.4.19"
+    "fast-xml-parser": "^3.2.2",
+    "xml2js": "^0.4.19",
+    "xmlreader": "^0.2.3"
   },
   "devDependencies": {
     "express-static": "^1.2.5"
