@@ -39,6 +39,7 @@
     <Content Include="Package\responsetxt.xml">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="Package\returntextjson.json" />
     <Content Include="README.md" />
     <Content Include="WebPage\index.html">
       <SubType>Code</SubType>
@@ -48,6 +49,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Template\" />
     <Folder Include="Package\" />
     <Folder Include="WebPage\" />
   </ItemGroup>
