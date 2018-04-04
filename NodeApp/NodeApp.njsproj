@@ -28,8 +28,12 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="mongo.js" />
     <Compile Include="server.js" />
     <Compile Include="serverexpress.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestMongo.js">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="WebPage\ajax.js" />
